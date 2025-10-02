@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Vite Cache and Dependencies
+.vite/
+
+# Node Modules
+node_modules/
