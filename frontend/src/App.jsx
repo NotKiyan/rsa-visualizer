@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './style.css';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'https://rsa-visualizer.onrender.com/api';
 const App = () => {
   // --- State Management ---
   const [primes, setPrimes] = useState({ p: 11, q: 13 });
