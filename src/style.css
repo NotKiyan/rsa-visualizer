@@ -1,0 +1,182 @@
+/* Minimalist Black and White Theme */
+:root {
+    --color-primary: #FFFFFF; /* White */
+    --color-secondary: #000000; /* Black */
+    --color-accent: #FF0000; /* Red hint for important values */
+    --font-family-mono: 'Space Mono', monospace; /* Sharp, technical font */
+}
+
+/* Global Styles and Body */
+body {
+    background-color: var(--color-secondary);
+    color: var(--color-primary);
+    font-family: var(--font-family-mono);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    font-size: 16px;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+/* Header/Title Bar Styling */
+.title-bar {
+    width: 100%;
+    border-bottom: 2px solid var(--color-primary);
+    padding: 20px 0;
+    margin-bottom: 40px;
+    text-align: center;
+}
+
+.title-bar h1 {
+    font-size: 1.5rem;
+    margin: 0;
+    letter-spacing: 5px;
+}
+
+.title-bar p {
+    font-size: 0.75rem;
+    margin: 5px 0 0;
+    opacity: 0.7;
+    letter-spacing: 2px;
+}
+
+/* Main Content Layout (Grid) */
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 40px;
+    padding: 0 20px 80px 20px;
+}
+
+/* Module Styling */
+.module {
+    border: 2px solid var(--color-primary);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.module h2 {
+    font-size: 1.2rem;
+    margin: 0 0 15px 0;
+    border-bottom: 1px dashed var(--color-primary);
+    padding-bottom: 10px;
+}
+
+.section-instruction {
+    font-size: 0.85rem;
+    margin-bottom: 20px;
+    opacity: 0.9;
+}
+
+/* Input Group Styling */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.input-group label {
+    font-size: 0.7rem;
+    margin-bottom: 5px;
+    letter-spacing: 1px;
+}
+
+input[type="number"], input[type="text"] {
+    background: none;
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    padding: 8px;
+    font-size: 1rem;
+    font-family: var(--font-family-mono);
+    text-align: center;
+}
+
+/* Hide number input arrows */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Button Styling (High Contrast) */
+button {
+    background-color: var(--color-primary);
+    color: var(--color-secondary);
+    border: 2px solid var(--color-primary);
+    padding: 10px 15px;
+    font-family: var(--font-family-mono);
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.2s, color 0.2s;
+    letter-spacing: 1px;
+}
+
+button:hover:not(:disabled) {
+    background-color: #333333; /* Darker gray on hover */
+    color: var(--color-primary);
+}
+
+button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    background-color: var(--color-primary);
+}
+
+/* Output Styling */
+.output-step-container {
+    margin-top: 25px;
+    border-top: 1px dashed var(--color-primary);
+    padding-top: 15px;
+}
+
+.output-step-container p {
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+.output-step-container span {
+    font-weight: bold;
+    color: var(--color-accent); /* Use red hint for key numbers */
+}
+
+.formula-display {
+    text-align: center;
+    font-size: 1.1rem;
+    margin: 15px 0;
+    padding: 10px;
+    border: 1px solid #333333;
+}
+
+.step-visualization {
+    margin-top: 10px;
+    font-size: 0.8rem;
+    white-space: pre-wrap;
+    background-color: #1a1a1a;
+    padding: 10px;
+    border: 1px solid #333;
+    min-height: 80px; /* Ensure space for output */
+}
+
+.error-message {
+    color: var(--color-accent);
+    background-color: #330000;
+    border: 1px solid var(--color-accent);
+    padding: 10px;
+    margin: 0 auto 20px auto;
+    width: 90%;
+    max-width: 1200px;
+    text-align: center;
+    font-size: 0.9rem;
+}
