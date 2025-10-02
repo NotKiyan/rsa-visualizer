@@ -120,7 +120,7 @@ app.post('/api/decrypt', (req, res) => {
 });
 
 
-// Custom ModExp function (Square-and-Multiply) using BigInt
+
 function modExp(base, exponent, modulus) {
     if (modulus === 0n) throw new Error("Modulus must be non-zero");
     if (exponent < 0n) throw new Error("Negative exponents not supported");
