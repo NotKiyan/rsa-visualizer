@@ -8,7 +8,7 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-let CURRENT_KEYS = {};
+// let CURRENT_KEYS = {};
 
 // Helper function to check if a number is prime (simplified check)
 function isPrime(num) {
@@ -26,42 +26,40 @@ function isPrime(num) {
 // ==============================
 app.post('/api/generate-keys', (req, res) => {
     const { p: pStr, q: qStr } = req.body;
-
     const p = BigInt(pStr);
     const q = BigInt(qStr);
-
     if (!isPrime(Number(p)) || !isPrime(Number(q)) || p === q) {
         return res.status(400).json({ error: 'Both P and Q must be distinct, valid prime numbers.' });
     }
-
     try {
         const n = p * q;
         const pMinus1 = p - 1n;
         const qMinus1 = q - 1n;
-
-        // Euler's Totient function: phi(n) = (p-1)(q-1)
         const phi = pMinus1 * qMinus1;
-
-        // Standard public exponent e
         const e = 65537n;
-
-        // d = e^-1 mod phi(n) using the Extended Euclidean Algorithm
         const d = modInv(e, phi);
 
-        CURRENT_KEYS = { n, e, d };
+        // Add step-by-step explanation
+        const steps = [
+            `Step 1: Calculate N = p × q = ${p} × ${q} = ${n}`,
+            `Step 2: Calculate φ(n) = (p-1) × (q-1) = ${pMinus1} × ${qMinus1} = ${phi}`,
+         `Step 3: Choose public exponent e = ${e} (standard value)`,
+         `Step 4: Calculate private exponent d ≡ e⁻¹ (mod φ(n))`,
+         `        d ≡ ${e}⁻¹ (mod ${phi}) = ${d}`
+        ];
 
+        CURRENT_KEYS = { n, e, d };
         res.json({
             n: n.toString(),
-            phi: phi.toString(),
-            e: e.toString(),
-            d: d.toString()
+                 phi: phi.toString(),
+                 e: e.toString(),
+                 d: d.toString(),
+                 steps: steps  // Add this
         });
-
     } catch (e) {
         res.status(400).json({ error: 'Could not compute modular inverse (d). Try different primes.' });
     }
 });
-
 // ==============================
 // 2. ENCRYPTION ENDPOINT (MISSING ENDPOINT ADDED)
 // ==============================

@@ -13,6 +13,7 @@ const App = () => {
 
   const [encryptionSteps, setEncryptionSteps] = useState('Ready to Encrypt.');
   const [decryptionSteps, setDecryptionSteps] = useState('Waiting for Ciphertext.');
+  const [keyGenerationSteps, setKeyGenerationSteps] = useState('');
 
   const isKeysGenerated = !!keys.n;
   const isEncrypted = !!ciphertext;
@@ -36,6 +37,7 @@ const App = () => {
       }
 
       setKeys(data);
+      setKeyGenerationSteps(data.steps.join('\n'));  // Add this
       setCiphertext('');
       setDecryptedMessage('');
       setEncryptionSteps('Keys successfully generated.');
@@ -124,6 +126,12 @@ const App = () => {
     </div>
 
     <button onClick={handleGenerateKeys}>GENERATE KEYS &rarr;</button>
+
+    {keyGenerationSteps && (
+      <div className="step-visualization" style={{whiteSpace: 'pre-line', marginTop: '1rem'}}>
+      {keyGenerationSteps}
+      </div>
+    )}
 
     <div className="output-step-container">
     <p>N (Modulus): <span>{keys.n || '?'}</span></p>
