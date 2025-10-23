@@ -1,21 +1,8 @@
-.viz-container {
-    border: 2px solid var(--color-primary);
-    padding: 30px;
-    margin-top: 20px;
-    min-height: 500px;
-    color: var(--color-primary); /* <-- ADD THIS LINE */
-}
-
-/* Remove the color rule from .visualizations-page if you added it there */
 .visualizations-page {
     width: 100%;
     max-width: 1200px;
-    padding: 20px;
-    /* color: var(--color-primary); */ /* <-- REMOVE if present */
+
 }
-
-
-/* ... rest of the CSS rules ... */
 
 .viz-selector {
     display: flex;
@@ -29,6 +16,7 @@
     padding: 12px 20px;
     font-size: 0.85rem;
     letter-spacing: 1px;
+
 }
 
 .viz-selector button.active {
@@ -37,12 +25,21 @@
     border-color: var(--color-accent);
 }
 
+.viz-container {
+    border: 2px solid var(--color-primary);
+    padding: 30px;
+    margin-top: 20px;
+    min-height: 500px;
+    color: var(--color-primary);
+}
+
 .viz-container h3 {
     text-align: center;
     font-size: 1.5rem;
     margin-bottom: 30px;
     border-bottom: 1px dashed var(--color-primary);
     padding-bottom: 15px;
+
 }
 
 .params-input {
@@ -57,11 +54,13 @@
     align-items: center;
     gap: 10px;
     font-size: 0.9rem;
+    /* Color inherited */
 }
 
 .params-input input {
     width: 80px;
     padding: 5px;
+
 }
 
 .step-display {
@@ -73,6 +72,7 @@
     font-size: 0.85rem;
     opacity: 0.7;
     margin-bottom: 20px;
+    /* Color inherited */
 }
 
 .step-content {
@@ -81,6 +81,7 @@
     padding: 30px;
     min-height: 200px;
     text-align: center;
+    /* Color inherited */
 }
 
 .step-content h4 {
@@ -92,6 +93,7 @@
 .step-content p {
     font-size: 1.1rem;
     line-height: 1.8;
+    white-space: pre-wrap;
 }
 
 .step-controls {
@@ -103,40 +105,91 @@
 
 .step-controls button {
     min-width: 120px;
+
 }
 
 /* Modular Arithmetic */
+.modular-input {
+    margin-top: 10px; /* Add some space above inputs */
+}
+
 .modular-clock {
     text-align: center;
-    padding: 40px;
+    padding: 20px 0; /* Reduced padding */
+    margin-top: 20px;
+}
+
+.modular-clock p {
+    color: var(--color-primary);
+    margin: 10px 0; /* Adjust margin */
 }
 
 .clock-circle {
     position: relative;
-    width: 300px;
+    width: 300px; /* Keep size */
     height: 300px;
     border: 3px solid var(--color-primary);
     border-radius: 50%;
-    margin: 40px auto;
+    margin: 30px auto; /* Adjust margin */
+}
+
+.clock-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 10px;
+    height: 10px;
+    background: var(--color-primary);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2; /* Ensure it's above the hand */
+}
+
+.clock-hand {
+    position: absolute;
+    bottom: 50%; /* Start from the center */
+    left: 50%;
+    width: 3px; /* Hand thickness */
+    height: 120px; /* Hand length (less than radius) */
+    background-color: var(--color-accent); /* Red hand */
+    transform-origin: bottom center; /* Rotate around the bottom center point */
+    transform: translateX(-50%) rotate(0deg); /* Initial position, translateX centers it */
+    z-index: 1;
+    transition: transform 0.3s ease-out; /* Smooth rotation */
 }
 
 .clock-number {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    font-size: 1.2rem;
+    /* top/left are set by inline style */
+    font-size: 1.1rem; /* Slightly smaller */
     font-weight: bold;
+    color: var(--color-primary);
+    transform: translate(-50%, -50%); /* Center the number on its calculated position */
+    z-index: 3; /* Above hand and center */
+    min-width: 20px; /* Ensure space for 2-digit numbers */
+    text-align: center;
 }
 
 .explanation {
-    font-size: 1.1rem;
-    margin-top: 30px;
+    font-size: 1.2rem; /* Larger result text */
+    margin-top: 20px;
     color: var(--color-accent);
+}
+
+.small-explanation {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    color: var(--color-primary); /* Normal color */
+    margin-top: 5px;
 }
 
 /* Prime Testing */
 .sieve-visualization {
     padding: 20px;
+}
+
+.sieve-visualization p { /* Target the "Sieve..." text */
+    color: var(--color-primary);
 }
 
 .number-grid {
@@ -153,6 +206,7 @@
     justify-content: center;
     border: 1px solid var(--color-primary);
     font-size: 0.8rem;
+    color: var(--color-primary);
 }
 
 .number-cell.prime {
@@ -163,6 +217,7 @@
 
 .number-cell.composite {
     opacity: 0.3;
+
 }
 
 /* ECC Placeholder */
@@ -171,9 +226,27 @@
     text-align: center;
 }
 
+.ecc-placeholder p,
+.ecc-placeholder ul {
+    color: var(--color-primary); /* Ensure text is visible */
+}
+
 .ecc-placeholder ul {
     list-style: none;
     padding: 20px 0;
     font-size: 1.1rem;
     line-height: 2;
+}
+
+/* --- Fix for Visibility (Redundant if .viz-container color works) --- */
+/* You might not need these if setting color on .viz-container fixed it, */
+/* but they provide extra certainty. */
+
+.sieve-visualization p {
+    color: var(--color-primary);
+}
+
+.ecc-placeholder p,
+.ecc-placeholder ul {
+    color: var(--color-primary);
 }
