@@ -11,7 +11,11 @@ const port = 5000;
 
 // --- CORS Configuration ---
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://rsa-visualizer.onrender.com'],
+    origin: [
+        'http://localhost:5173', // For local testing
+        'https://rsa-visualizer.onrender.com', // If backend serves something itself? Usually not needed here.
+        'https://rsa-visualizer-indol.vercel.app' // <-- ADD YOUR VERCEL FRONTEND URL
+    ],
     credentials: true
 }));
 app.use(express.json());
