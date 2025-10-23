@@ -1,21 +1,49 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react'; // <-- Add useContext, useEffect
+import { RsaContext } from './RsaContext'; // <-- Import context
 import './Visualizations.css';
 
 const Visualizations = () => {
+    const { primes } = useContext(RsaContext); // <-- Get primes from context
     const [activeViz, setActiveViz] = useState('rsa');
-    const [rsaParams, setRsaParams] = useState({ p: 7, q: 11, message: 5 });
+
+    // Initialize local state using the shared context primes, with fallbacks
+    const [rsaParams, setRsaParams] = useState({
+        p: parseInt(primes.p) || 7, // Convert to number, provide fallback
+                                               q: parseInt(primes.q) || 11, // Convert to number, provide fallback
+                                               message: 5
+    });
     const [currentStep, setCurrentStep] = useState(0);
 
-    // RSA Visualization Steps
+    // Effect to update local rsaParams if context 'primes' change after initial load
+    useEffect(() => {
+        setRsaParams(prevParams => ({
+            ...prevParams,
+            p: parseInt(primes.p) || 7,
+                                    q: parseInt(primes.q) || 11
+        }));
+        // Reset step if primes change? Optional.
+        // setCurrentStep(0);
+    }, [primes]);
+
+
+    // Dynamically generate steps based on rsaParams state
     const rsaSteps = [
         { title: "Choose Prime Numbers", description: `p = ${rsaParams.p}, q = ${rsaParams.q}` },
-        { title: "Calculate n", description: `n = p × q = ${rsaParams.p} × ${rsaParams.q} = ${rsaParams.p * rsaParams.q}` },
-        { title: "Calculate φ(n)", description: `φ(n) = (p-1) × (q-1) = ${rsaParams.p - 1} × ${rsaParams.q - 1} = ${(rsaParams.p - 1) * (rsaParams.q - 1)}` },
+        { title: "Calculate n", description: `n = p × q = ${rsaParams.p} × ${rsaParams.q} = ${isNaN(rsaParams.p * rsaParams.q) ? '?' : rsaParams.p * rsaParams.q}` },
+        { title: "Calculate φ(n)", description: `φ(n) = (p-1) × (q-1) = ${rsaParams.p - 1} × ${rsaParams.q - 1} = ${isNaN((rsaParams.p - 1) * (rsaParams.q - 1)) ? '?' : (rsaParams.p - 1) * (rsaParams.q - 1)}` },
         { title: "Choose e", description: "e = 65537 (standard public exponent)" },
-        { title: "Calculate d", description: "d = e⁻¹ mod φ(n) (using Extended Euclidean Algorithm)" },
-        { title: "Encryption", description: `C = M^e mod n = ${rsaParams.message}^e mod n` },
-        { title: "Decryption", description: "M = C^d mod n" }
+        { title: "Calculate d", description: `d = e⁻¹ mod φ(n) = 65537⁻¹ mod ${isNaN((rsaParams.p - 1) * (rsaParams.q - 1)) ? '?' : (rsaParams.p - 1) * (rsaParams.q - 1)} (requires backend)` }, // Placeholder
+        { title: "Encryption", description: `C = M^e mod n = ${rsaParams.message}^65537 mod ${isNaN(rsaParams.p * rsaParams.q) ? '?' : rsaParams.p * rsaParams.q}` },
+        { title: "Decryption", description: `M = C^d mod n = C^d mod ${isNaN(rsaParams.p * rsaParams.q) ? '?' : rsaParams.p * rsaParams.q}` }
     ];
+
+    const handleParamChange = (param, value) => {
+        const numValue = parseInt(value) || 0; // Ensure it's a number
+        setRsaParams(prevParams => ({
+            ...prevParams,
+            [param]: numValue
+        }));
+    };
 
     const renderVisualization = () => {
         switch(activeViz) {
@@ -25,13 +53,13 @@ const Visualizations = () => {
                     <h3>RSA Algorithm Step-by-Step</h3>
                     <div className="params-input">
                     <label>
-                    p: <input type="number" value={rsaParams.p} onChange={(e) => setRsaParams({...rsaParams, p: parseInt(e.target.value)})} />
+                    p: <input type="number" value={rsaParams.p} onChange={(e) => handleParamChange('p', e.target.value)} />
                     </label>
                     <label>
-                    q: <input type="number" value={rsaParams.q} onChange={(e) => setRsaParams({...rsaParams, q: parseInt(e.target.value)})} />
+                    q: <input type="number" value={rsaParams.q} onChange={(e) => handleParamChange('q', e.target.value)} />
                     </label>
                     <label>
-                    Message: <input type="number" value={rsaParams.message} onChange={(e) => setRsaParams({...rsaParams, message: parseInt(e.target.value)})} />
+                    Message: <input type="number" value={rsaParams.message} onChange={(e) => handleParamChange('message', e.target.value)} />
                     </label>
                     </div>
 
@@ -41,7 +69,7 @@ const Visualizations = () => {
                     </div>
                     <div className="step-content">
                     <h4>{rsaSteps[currentStep].title}</h4>
-                    <p>{rsaSteps[currentStep].description}</p>
+                    <p style={{ whiteSpace: 'pre-wrap' }}>{rsaSteps[currentStep].description}</p>
                     </div>
                     <div className="step-controls">
                     <button onClick={() => setCurrentStep(Math.max(0, currentStep - 1))} disabled={currentStep === 0}>
@@ -51,63 +79,7 @@ const Visualizations = () => {
                     Next →
                     </button>
                     </div>
-                    </div>
-                    </div>
-                );
 
-            case 'modular':
-                return (
-                    <div className="viz-container">
-                    <h3>Modular Arithmetic Visualization</h3>
-                    <div className="modular-clock">
-                    <p>Visual representation of mod 12 (clock)</p>
-                    <div className="clock-circle">
-                    {[...Array(12)].map((_, i) => (
-                        <div key={i} className="clock-number" style={{
-                            transform: `rotate(${i * 30}deg) translate(100px) rotate(-${i * 30}deg)`
-                        }}>
-                        {i}
-                        </div>
-                    ))}
-                    </div>
-                    <p className="explanation">13 mod 12 = 1 (goes around once)</p>
-                    </div>
-                    </div>
-                );
-
-            case 'prime':
-                return (
-                    <div className="viz-container">
-                    <h3>Prime Number Testing</h3>
-                    <div className="sieve-visualization">
-                    <p>Sieve of Eratosthenes</p>
-                    <div className="number-grid">
-                    {[...Array(100)].map((_, i) => {
-                        const num = i + 1;
-                        const isPrime = num > 1 && ![...Array(Math.floor(Math.sqrt(num)))].some((_, j) => j > 1 && num % (j + 1) === 0);
-                        return (
-                            <div key={i} className={`number-cell ${isPrime ? 'prime' : 'composite'}`}>
-                            {num}
-                            </div>
-                        );
-                    })}
-                    </div>
-                    </div>
-                    </div>
-                );
-
-            case 'ecc':
-                return (
-                    <div className="viz-container">
-                    <h3>Elliptic Curve Cryptography</h3>
-                    <p>Coming Soon: Interactive ECC visualization</p>
-                    <div className="ecc-placeholder">
-                    <p>Will show:</p>
-                    <ul>
-                    <li>Point addition on curves</li>
-                    <li>Scalar multiplication</li>
-                    <li>Key generation process</li>
-                    </ul>
                     </div>
                     </div>
                 );
@@ -117,8 +89,10 @@ const Visualizations = () => {
         }
     };
 
+
     return (
         <div className="visualizations-page">
+        {/* ... Header ... */}
         <header>
         <div className="title-bar">
         <h1>CRYPTOGRAPHY VISUALIZATIONS</h1>
@@ -126,6 +100,7 @@ const Visualizations = () => {
         </div>
         </header>
 
+        {/* ... Viz Selector ... */}
         <div className="viz-selector">
         <button className={activeViz === 'rsa' ? 'active' : ''} onClick={() => { setActiveViz('rsa'); setCurrentStep(0); }}>
         RSA Algorithm

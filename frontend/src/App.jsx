@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react'; // <-- Import useContext
+import { RsaContext } from './RsaContext'; // <-- Import the context you created
 import './style.css';
 
-const API_BASE_URL = 'https://rsa-visualizer.onrender.com/api';
+// Use environment variable for the API URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+
 const App = () => {
-  // --- State Management ---
-  const [primes, setPrimes] = useState({ p: 11, q: 13 });
+  // --- Use Context State ---
+  const { primes, setPrimes } = useContext(RsaContext); // <-- Get state from context
+
+  // --- REMOVE local primes state ---
+  // const [primes, setPrimes] = useState({ p: 11, q: 13 }); // <-- REMOVED THIS LINE
+
+  // --- Other State Management ---
   const [keys, setKeys] = useState({});
   const [message, setMessage] = useState(88);
   const [ciphertext, setCiphertext] = useState('');
   const [decryptedMessage, setDecryptedMessage] = useState('');
+  const [history, setHistory] = useState([]);
   const [error, setError] = useState('');
 
   const [encryptionSteps, setEncryptionSteps] = useState('Ready to Encrypt.');
@@ -18,7 +27,34 @@ const App = () => {
   const isKeysGenerated = !!keys.n;
   const isEncrypted = !!ciphertext;
 
+  // --- Function to fetch history ---
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/history`, {
+        credentials: 'include' // <-- IMPORTANT for sessions
+      });
+      // Add check for response.ok before parsing JSON
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      if (!data.error) {
+        setHistory(data);
+      } else {
+        console.error("Backend error fetching history:", data.error);
+      }
+    } catch (e) {
+      console.error("Could not fetch history:", e);
+    }
+  };
+
+  // --- useEffect to load history on mount ---
+  useEffect(() => {
+    fetchHistory();
+  }, []); // Empty array means this runs once on load
+
   // --- API Handlers ---
+  // These now use 'primes' and 'setPrimes' from the context
 
   const handleGenerateKeys = async () => {
     setError('');
@@ -26,25 +62,31 @@ const App = () => {
       const response = await fetch(`${API_BASE_URL}/generate-keys`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(primes),
+        body: JSON.stringify(primes), // Uses context 'primes'
+        credentials: 'include'
       });
+      if (!response.ok) { // Check response status
+        const errorData = await response.json().catch(() => ({ error: `HTTP error! status: ${response.status}` }));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
 
-      if (data.error) {
+      if (data.error) { // Check for application-level error from backend
         setError(data.error);
         setKeys({});
         return;
       }
 
       setKeys(data);
-      setKeyGenerationSteps(data.steps.join('\n'));  // Add this
+      setKeyGenerationSteps(data.steps.join('\n'));
       setCiphertext('');
       setDecryptedMessage('');
       setEncryptionSteps('Keys successfully generated.');
       setDecryptionSteps('Ciphertext required.');
 
     } catch (e) {
-      setError('Could not connect to the Node.js backend.');
+      setError(e.message || 'Could not connect to the Node.js backend or key generation failed.');
+      console.error("Generate keys error:", e);
     }
   };
 
@@ -55,7 +97,12 @@ const App = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message }),
+                                   credentials: 'include'
       });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: `HTTP error! status: ${response.status}` }));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
 
       if (data.error) {
@@ -69,7 +116,8 @@ const App = () => {
         `Ciphertext C = ${data.ciphertext}`
       );
     } catch (e) {
-      setError('Encryption failed. Check message size relative to N.');
+      setError(e.message || 'Encryption failed. Check message size relative to N.');
+      console.error("Encrypt error:", e);
     }
   };
 
@@ -80,7 +128,12 @@ const App = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ ciphertext }),
+                                   credentials: 'include'
       });
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: `HTTP error! status: ${response.status}` }));
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
 
       if (data.error) {
@@ -89,15 +142,18 @@ const App = () => {
       }
 
       setDecryptedMessage(data.decryptedMessage);
+      fetchHistory(); // <-- RE-FETCH HISTORY ON SUCCESS
       setDecryptionSteps(
         `${data.formula}\n` +
         `Decrypted Message M = ${data.decryptedMessage}`
       );
     } catch (e) {
-      setError('Decryption failed.');
+      setError(e.message || 'Decryption failed.');
+      console.error("Decrypt error:", e);
     }
   };
 
+  // --- JSX ---
   return (
     <div className="app-container">
     <header>
@@ -117,11 +173,13 @@ const App = () => {
 
     <div className="input-group">
     <label htmlFor="inputP">Prime P:</label>
+    {/* Input now reads from and writes to context 'primes' via setPrimes */}
     <input type="number" id="inputP" value={primes.p} onChange={e => setPrimes({ ...primes, p: e.target.value })} min="2" />
     </div>
 
     <div className="input-group">
     <label htmlFor="inputQ">Prime Q:</label>
+    {/* Input now reads from and writes to context 'primes' via setPrimes */}
     <input type="number" id="inputQ" value={primes.q} onChange={e => setPrimes({ ...primes, q: e.target.value })} min="2" />
     </div>
 
@@ -144,7 +202,7 @@ const App = () => {
     {/* 2. ENCRYPTION SECTION */}
     <section className="module encryption">
     <h2>2. ENCRYPTION (Sender)</h2>
-   <p className="section-instruction">Encrypt a message $M &lt; N$ using the Public Key.</p>
+    <p className="section-instruction">Encrypt a message $M &lt; N$ using the Public Key.</p>
 
     <div className="input-group">
     <label htmlFor="inputM">Message M (Number):</label>
@@ -185,6 +243,28 @@ const App = () => {
     </div>
     </section>
     </main>
+
+    {/* --- History Section --- */}
+    <section className="module history-module">
+    <h2>PAST OPERATIONS (This Session)</h2>
+    {history.length === 0 ? (
+      <p className="section-instruction">No operations recorded for this session yet.</p>
+    ) : (
+      <div className="history-list">
+      {history.map((log) => (
+        <div key={log._id} className="history-item">
+        <p>
+        <strong>Inputs:</strong> P=<span>{log.p}</span>, Q=<span>{log.q}</span>, Message=<span>{log.message === -1 ? '(unknown)' : log.message}</span>
+        </p>
+        <p><strong>Ciphertext:</strong> <span>{log.ciphertext}</span></p>
+        <p><strong>Decrypted:</strong> <span>{log.decryptedMessage}</span></p>
+        <p className="history-timestamp"><em>{new Date(log.timestamp).toLocaleString()}</em></p>
+        </div>
+      ))}
+      </div>
+    )}
+    </section>
+
     </div>
   );
 };

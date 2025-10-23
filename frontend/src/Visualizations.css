@@ -1,8 +1,21 @@
+.viz-container {
+    border: 2px solid var(--color-primary);
+    padding: 30px;
+    margin-top: 20px;
+    min-height: 500px;
+    color: var(--color-primary); /* <-- ADD THIS LINE */
+}
+
+/* Remove the color rule from .visualizations-page if you added it there */
 .visualizations-page {
     width: 100%;
     max-width: 1200px;
     padding: 20px;
+    /* color: var(--color-primary); */ /* <-- REMOVE if present */
 }
+
+
+/* ... rest of the CSS rules ... */
 
 .viz-selector {
     display: flex;
@@ -22,13 +35,6 @@
     background-color: var(--color-accent);
     color: var(--color-primary);
     border-color: var(--color-accent);
-}
-
-.viz-container {
-    border: 2px solid var(--color-primary);
-    padding: 30px;
-    margin-top: 20px;
-    min-height: 500px;
 }
 
 .viz-container h3 {
