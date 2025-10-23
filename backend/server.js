@@ -8,7 +8,7 @@ const port = 5000;
 app.use(cors());
 app.use(express.json());
 
-// let CURRENT_KEYS = {};
+let CURRENT_KEYS = {};
 
 // Helper function to check if a number is prime (simplified check)
 function isPrime(num) {
