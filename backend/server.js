@@ -7,6 +7,7 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 
 const app = express();
+app.set('trust proxy', 1);
 const port = 5000;
 
 // --- CORS Configuration ---
@@ -40,15 +41,18 @@ const RsaLog = mongoose.model('RsaLog', RsaLogSchema);
 
 // --- 3. Session Middleware ---
 app.use(session({
-    secret: process.env.SECRET_KEY, // Make sure SECRET_KEY is in your .env
+    secret: process.env.SECRET_KEY,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: true, // Consider setting to false if login is required
     store: MongoStore.create({
         mongoUrl: process.env.MONGO_URI,
         collectionName: 'sessions'
     }),
     cookie: {
-        maxAge: 1000 * 60 * 60 * 24 // 1 day
+        maxAge: 1000 * 60 * 60 * 24, // 1 day
+        sameSite: 'none', // Allow cross-site cookie sending
+        secure: true      // Requires HTTPS (which Render and Vercel use)
+// --- END ADD ---
     }
 }));
 
