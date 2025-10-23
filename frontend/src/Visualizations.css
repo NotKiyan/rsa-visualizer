@@ -1,0 +1,173 @@
+.visualizations-page {
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+}
+
+.viz-selector {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.viz-selector button {
+    padding: 12px 20px;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+}
+
+.viz-selector button.active {
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    border-color: var(--color-accent);
+}
+
+.viz-container {
+    border: 2px solid var(--color-primary);
+    padding: 30px;
+    margin-top: 20px;
+    min-height: 500px;
+}
+
+.viz-container h3 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    border-bottom: 1px dashed var(--color-primary);
+    padding-bottom: 15px;
+}
+
+.params-input {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.params-input label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.params-input input {
+    width: 80px;
+    padding: 5px;
+}
+
+.step-display {
+    margin-top: 40px;
+}
+
+.step-indicator {
+    text-align: center;
+    font-size: 0.85rem;
+    opacity: 0.7;
+    margin-bottom: 20px;
+}
+
+.step-content {
+    background-color: #1a1a1a;
+    border: 2px solid var(--color-primary);
+    padding: 30px;
+    min-height: 200px;
+    text-align: center;
+}
+
+.step-content h4 {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+    color: var(--color-accent);
+}
+
+.step-content p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.step-controls {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.step-controls button {
+    min-width: 120px;
+}
+
+/* Modular Arithmetic */
+.modular-clock {
+    text-align: center;
+    padding: 40px;
+}
+
+.clock-circle {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    border: 3px solid var(--color-primary);
+    border-radius: 50%;
+    margin: 40px auto;
+}
+
+.clock-number {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.explanation {
+    font-size: 1.1rem;
+    margin-top: 30px;
+    color: var(--color-accent);
+}
+
+/* Prime Testing */
+.sieve-visualization {
+    padding: 20px;
+}
+
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 5px;
+    margin-top: 20px;
+}
+
+.number-cell {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--color-primary);
+    font-size: 0.8rem;
+}
+
+.number-cell.prime {
+    background-color: var(--color-accent);
+    color: var(--color-primary);
+    font-weight: bold;
+}
+
+.number-cell.composite {
+    opacity: 0.3;
+}
+
+/* ECC Placeholder */
+.ecc-placeholder {
+    padding: 40px;
+    text-align: center;
+}
+
+.ecc-placeholder ul {
+    list-style: none;
+    padding: 20px 0;
+    font-size: 1.1rem;
+    line-height: 2;
+}
