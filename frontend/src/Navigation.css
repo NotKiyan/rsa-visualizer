@@ -25,3 +25,18 @@
     background-color: var(--color-primary);
     color: var(--color-secondary);
 }
+
+
+/* src/Navigation.css additions for mobile responsiveness */
+@media (max-width: 600px) {
+    .main-navigation {
+        gap: 10px;
+        padding: 10px 0;
+    }
+
+    .nav-link {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+        letter-spacing: 1px;
+    }
+}

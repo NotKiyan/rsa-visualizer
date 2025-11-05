@@ -250,3 +250,82 @@
 .ecc-placeholder ul {
     color: var(--color-primary);
 }
+
+
+/* src/Visualizations.css additions for mobile responsiveness */
+@media (max-width: 600px) {
+    .visualizations-page {
+        padding: 0 10px;
+    }
+
+    /* Stack visualization selector buttons vertically */
+    .viz-selector {
+        flex-direction: column;
+        gap: 15px;
+        margin: 20px 10px;
+    }
+
+    .viz-selector button {
+        padding: 10px;
+        font-size: 1rem;
+    }
+
+    .viz-container {
+        padding: 20px 10px;
+        margin-top: 10px;
+        min-height: auto; /* Allow height to adjust */
+    }
+
+    /* RSA/ECC/Modular Input Adjustments */
+    .params-input {
+        flex-direction: column; /* Stack input groups */
+        gap: 15px;
+    }
+    .params-input label {
+        justify-content: space-between;
+    }
+    .params-input input {
+        width: 100px; /* Keep input width fixed within the label */
+    }
+
+    /* RSA Step Visualization */
+    .step-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .step-controls button {
+        min-width: 100%;
+    }
+    .step-content {
+        padding: 20px;
+        min-height: 150px;
+    }
+
+    /* Modular Clock Visualization */
+    .clock-circle {
+        width: 250px; /* Shrink the clock */
+        height: 250px;
+        margin: 20px auto;
+    }
+    .clock-hand {
+        height: 100px; /* Adjust hand length */
+    }
+    .clock-number {
+        font-size: 1rem;
+    }
+
+    /* Prime Sieve Visualization */
+    .number-grid {
+        grid-template-columns: repeat(8, 1fr); /* Reduce from 10 to 8 columns for better fit */
+        gap: 3px;
+    }
+    .number-cell {
+        font-size: 0.7rem;
+    }
+
+    /* ECC Placeholder Text Size */
+    .ecc-placeholder p,
+    .ecc-placeholder ul {
+        font-size: 0.9rem;
+    }
+}
